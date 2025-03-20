@@ -13,7 +13,9 @@ for line in io.lines() do
         end
     end
 end
+outpos:flush()
 io.close()
+
 local in2 = io.open("mid.txt", "r")
 local out2 = io.open("res.txt","w")
 io.input(in2)
@@ -40,4 +42,6 @@ for line in io.lines() do
         out2:write("\n")
     end
 end
+out2:flush()
 io.close()
+print("finished")
