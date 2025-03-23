@@ -74,7 +74,7 @@ for line in io.lines() do
         end
     end
 end
-out3:write("}")
+out3:write("};")
 out3:flush()
 io.close()
 print("finished")

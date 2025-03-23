@@ -16,20 +16,33 @@ int main(){
     return 0;
 }
 
-void Draw_flower(Kwiatek wyb) //bool board
+void Draw_flower(Kwiatek wyb) //texas int (16 bit) board
 {
     for(int y = 9; y < 128; y++){
         for(int x = 0; x < 15; x++){    
             for(int b = 15; b >= 0; b--){
-                if((Test2[(y - 9) * 15 + x])&0x0001 << b){
-                    SetPixel(ekran, x, y);
-                } 
+                switch (wyb){
+                    case Spalony:
+                        if((Test2[(y - 9) * 15 + x])&0x0001 << b){
+                            SetPixel(ekran, x, y);
+                        } 
+                        break;
+                    case Przegrzany:
+                        break;
+                    case Normalny:
+                        break;
+                    case Zimny:
+                        break;
+                    case Brak:
+                        break;
+                }
+                
             }                       
         }
     }
 }
 
-void Draw_flower2(Kwiatek wyb) //int board (texas int - 16bit)
+void Draw_flower2(Kwiatek wyb) //bool board
 {
     for(int y = 9; y < 128; y++){
         for(int x = 0; x < 240; x++){            
@@ -40,7 +53,7 @@ void Draw_flower2(Kwiatek wyb) //int board (texas int - 16bit)
     }
 }
 
-void SetPixel(unsigned long* aekran, int x, int y){
+void SetPixel(unsigned long* aekran, int x, int y){ //my simulation in terminal
     bool newline = false;
     do{
         if(y > last_y){
