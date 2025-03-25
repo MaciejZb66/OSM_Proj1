@@ -60,7 +60,7 @@ unsigned char Bufor[] = "Temp:  ";
 
     int main()
 
-    {
+       {
         SetUpPeripherials();
 #ifdef TMSLAB_C2000
         LCD.LCD_Init(ekran, textEkran);
@@ -84,7 +84,7 @@ unsigned char Bufor[] = "Temp:  ";
         int exp_temp = 230;
         int real_temp = 220;
         bool window = false;
-
+        Ekran ekr = Obrazek;
         while (1)
         {
             EnableRefresh = 1;
@@ -92,7 +92,7 @@ unsigned char Bufor[] = "Temp:  ";
             EnableRefresh = 0;
 
             unsigned char Key = KEYBOARD.GetKey();
-            Change_data(Key, &exp_temp, &window);
+            Change_data(Key, &exp_temp, &window, &ekr);
             LEDBAR.SetValue(Tim);
 
 //            Bufor[6] = Key / 10 + '0';
@@ -100,10 +100,7 @@ unsigned char Bufor[] = "Temp:  ";
 //            PrintText(textEkran, Bufor, 8, 0, 0);
             Draw_info(real_temp, exp_temp, window);
             ClearScreen();
-            for(int i = 0; i<240;i++){
-                SetPixel(ekran, i, 8);
-            }
-            //Draw_flower(Spalony);
+            Draw(ekr, Spalony);
 //            DrawPixels(Key);
 #ifdef TMSLAB_WIN
             if(PartialRefresh()) return 0;
@@ -229,12 +226,7 @@ unsigned char Bufor[] = "Temp:  ";
         }
     #endif
     }
-    void ClearScreen()
-    {
 
-        for (int a = 0; a < (128 * 8); a++)
-        ekran[a] = 0;
-    }
     void DrawPixels(int Key)
     {
     #ifdef CPP_EXAMPLE

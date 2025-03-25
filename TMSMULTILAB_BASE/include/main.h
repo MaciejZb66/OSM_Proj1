@@ -20,7 +20,7 @@
 void SetUpPeripherials();
 void EnableInterrupts();
 void InitData();
-void ClearScreen();
+
 void DrawPixels(int Key);
 
 
