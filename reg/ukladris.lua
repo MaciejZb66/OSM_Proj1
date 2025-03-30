@@ -5,7 +5,7 @@ function Inercja1(enter, last) -- 1/(5s+1)
   return out
 end
 
-function Inercja2(enter, last) -- 2/3s+1
+function Inercja2(enter, last) -- 2/(3s+1)
   local out = ((Tp / (3 + Tp)) * enter + (3 / (3 + Tp)) * last/2)*2
   return out
 end
