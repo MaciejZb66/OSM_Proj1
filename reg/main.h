@@ -19,9 +19,11 @@ class PID{
     }
 
     float Reg_step(){
+        //printf("(input: %f, expected: %f)",input, expected);
         float P = Kp * (expected - input);
-        float I = (Kp /Ti * Ts * (expected - input)) + last_i;
+        float I = (Kp /Ti * Ts * (expected - input)) + last_i;        
         float D = Kp * ((expected - input) - (expected - last_input))/Ts * Td;
+        printf("P: %.2f \t", P);
         last_i = I;
         last_input = input;
         output = P + I + D;
