@@ -10,10 +10,11 @@ run in terminal (max 9 font) ./a.out
 #include <iostream>
 #include <stdbool.h>
 #include "draw.h"
-#include "drawhex.h"
+//#include "drawhex.h"
+#include "bitmaps.h"
 
 typedef enum{
-    Spalony, Przegrzany, Normalny, Zimny, Brak
+    Spalony, Przegrzany, Normalny, Letni, Zimny, Brak
 }Kwiatek;
 
 void Draw_flower(Kwiatek wyb);
