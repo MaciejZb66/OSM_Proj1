@@ -36,6 +36,7 @@ long Timer2IsrPeriod=1; // okres pracy symulowanego licznika Timer2 podany w prz
   #endif
 
 int Tim = 0;                // Licznik uzytkownika
+//int enable_step = 0;
 unsigned int preScale = 0;  // Preskaler licznika uzytkownika
 volatile char EnableRefresh = 0;    //Zezwolenie na odswiezenie zawartosci pamieci graficznej
 
@@ -59,8 +60,8 @@ int y[MaxObj];
 unsigned char Bufor[] = "Temp:  ";
 
     int main()
+    {
 
-       {
         SetUpPeripherials();
 #ifdef TMSLAB_C2000
         LCD.LCD_Init(ekran, textEkran);
@@ -82,9 +83,15 @@ unsigned char Bufor[] = "Temp:  ";
 
         EnableInterrupts();
         int exp_temp = 230;
-        int real_temp = 220;
+        int real_temp = 0;
         bool window = false;
         Ekran ekr = Obrazek;
+        Kwiatek kw = Brak;
+//        float tp = 0.1;
+//        PID reg_one(10, 3, 0.9, tp);
+//        Inercja in1(1, tp, 5);
+//        Inercja in2(2, tp, 3);
+//        float expected = 0;
         while (1)
         {
             EnableRefresh = 1;
@@ -94,13 +101,29 @@ unsigned char Bufor[] = "Temp:  ";
             unsigned char Key = KEYBOARD.GetKey();
             Change_data(Key, &exp_temp, &window, &ekr);
             LEDBAR.SetValue(Tim);
-
-//            Bufor[6] = Key / 10 + '0';
-//            Bufor[7] = Key % 10 + '0';
-//            PrintText(textEkran, Bufor, 8, 0, 0);
+//            if(enable_step == 1){
+//                reg_one.expected = expected;
+//                reg_one.input = real_temp;
+//                real_temp = reg_one.Reg_step();
+//                enable_step = 0;
+//            }
+            if(exp_temp < 83){
+                kw = Brak;
+            }else if(exp_temp < 166){
+                kw = Zimny;
+            }else if(exp_temp < 250){
+                kw = Letni;
+            }else if(exp_temp < 333){
+                kw = Normalny;
+            }else if(exp_temp < 416){
+                kw = Przegrzany;
+            }else{
+                kw = Spalony;
+            }
             Draw_info(real_temp, exp_temp, window);
             ClearScreen();
-            Draw(ekr, Spalony);
+            Draw(ekr, kw);
+//            expected = 10;
 //            DrawPixels(Key);
 #ifdef TMSLAB_WIN
             if(PartialRefresh()) return 0;
@@ -135,6 +158,7 @@ unsigned char Bufor[] = "Temp:  ";
         {
             preScale = 0;
             Tim++;
+//            enable_step = 1;
         }
     }
 

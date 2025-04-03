@@ -2,6 +2,8 @@
 #include "setup.h"
 #include "stdbool.h"
 #include "drawhex.h"
+#include "bitmaps.h"
+#include "reg.h"
 
 typedef enum{
     Spalony, Przegrzany, Normalny, Letni, Zimny, Brak

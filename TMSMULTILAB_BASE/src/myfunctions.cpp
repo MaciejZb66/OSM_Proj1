@@ -5,6 +5,8 @@ extern unsigned char *textEkran;
 extern const int Test2[];
 extern const int Test3[];
 
+
+
 void Draw_flower(Kwiatek wyb) //texas int (16 bit) board
 {
     for(int y = 9; y < 128; y++){
@@ -12,20 +14,33 @@ void Draw_flower(Kwiatek wyb) //texas int (16 bit) board
             for(int b = 15; b >= 0; b--){
                 switch (wyb){
                     case Spalony:
-                        if((Test2[(y - 9) * 15 + x])&0x0001 << b){
+//                        if((spalony[(y - 9) * 15 + x])&0x0001 << b){
+//                            SetPixel(ekran, 16 * x + 15 - b, y);
+//                        }
+                        break;
+                    case Przegrzany:
+                        if((przegrzany[(y - 9) * 15 + x])&0x0001 << b){
                             SetPixel(ekran, 16 * x + 15 - b, y);
                         }
                         break;
-                    case Przegrzany:
-                        break;
                     case Normalny:
+                        if((normalny[(y - 9) * 15 + x])&0x0001 << b){
+                            SetPixel(ekran, 16 * x + 15 - b, y);
+                        }
                         break;
+
                     case Letni:
+                        if((letni[(y - 9) * 15 + x])&0x0001 << b){
+                            SetPixel(ekran, 16 * x + 15 - b, y);
+                        }
                         break;
                     case Zimny:
+                        if((zimny[(y - 9) * 15 + x])&0x0001 << b){
+                            SetPixel(ekran, 16 * x + 15 - b, y);
+                        }
                         break;
                     case Brak:
-                        if((Test3[(y - 9) * 15 + x])&0x0001 << b){
+                        if((brak[(y - 9) * 15 + x])&0x0001 << b){
                             SetPixel(ekran, 16 * x + 15 - b, y);
                         }
                         break;
