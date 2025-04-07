@@ -1,9 +1,9 @@
 #include "main.h"
 
-//#define struct
+#define struct
 
 int main(){
-    float tp = 0.1;
+    float tp = 0.01;
     #ifndef struct
         PID reg_one(10, 3, 0.9, tp);
         Inercja in1(1, tp, 5);
@@ -33,17 +33,19 @@ int main(){
         }
     #endif
     #ifdef struct
-        for(int i = 0; i< 50; i++){
+        for(int i = 0; i< 100; i++){
             pid.expected = expected;
             pid.input = output;
             Reg_s_step(&pid);
-            output = pid.output;
-            //in1.input = reg_one.Reg_step();
-            //in2.input = in1.inercja_step();
-            //output = in2.inercja_step();
+            //output = pid.output;
+            in3.input = pid.output;
+            Inercja_s_step(&in3);
+            in4.input = in3.output;
+            Inercja_s_step(&in4);
+            output =  in4.output;
             std::cout << i/10 << "." << i%10 << "\t" << output << "\n";
             output = 0;
-            expected = 10;
+            expected = 1;
         }
     #endif
     return 0;

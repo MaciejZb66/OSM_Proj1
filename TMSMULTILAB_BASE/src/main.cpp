@@ -59,85 +59,83 @@ int y[MaxObj];
 
 unsigned char Bufor[] = "Temp:  ";
 
-    int main()
-    {
-
-        SetUpPeripherials();
-#ifdef TMSLAB_C2000
+int main()
+{
+    SetUpPeripherials();
+    #ifdef TMSLAB_C2000
         LCD.LCD_Init(ekran, textEkran);
-#endif
+    #endif
 
-#ifdef TMSLAB_WIN
+    #ifdef TMSLAB_WIN
         LCD.LCD_Init(&ekran,&textEkran);
-#ifdef WIN_PLOT
-  outputCSV=fopen(NazwaPlikuDanych,"w+" );
-  fprintf(outputCSV,CSV_NAGLOWEK);
-#endif
-#endif
+        #ifdef WIN_PLOT
+            outputCSV=fopen(NazwaPlikuDanych,"w+" );
+            fprintf(outputCSV,CSV_NAGLOWEK);
+        #endif
+    #endif
 
-        KEYBOARD.InitKB(100);
+    KEYBOARD.InitKB(100);
 
-        LEDBAR.InitLedBar();
+    LEDBAR.InitLedBar();
 
-        InitData();
+    InitData();
 
-        EnableInterrupts();
-        int exp_temp = 230;
-        int real_temp = 0;
-        bool window = false;
-        Ekran ekr = Obrazek;
-        Kwiatek kw = Brak;
-//        float tp = 0.1;
-//        PID reg_one(10, 3, 0.9, tp);
-//        Inercja in1(1, tp, 5);
-//        Inercja in2(2, tp, 3);
-//        float expected = 0;
-        while (1)
-        {
-            EnableRefresh = 1;
-            LCD.Synchronize();
-            EnableRefresh = 0;
+    EnableInterrupts();
+    int exp_temp = 230;
+    int real_temp = 0;
+    bool window = false;
+    Ekran ekr = Obrazek;
+    Kwiatek kw = Brak;
+    // float tp = 0.1;
+    // PID reg_one(10, 3, 0.9, tp);
+    // Inercja in1(1, tp, 5);
+    // Inercja in2(2, tp, 3);
+    // float expected = 0;
+    while (1)
+    {
+        EnableRefresh = 1;
+        LCD.Synchronize();
+        EnableRefresh = 0;
 
-            unsigned char Key = KEYBOARD.GetKey();
-            Change_data(Key, &exp_temp, &window, &ekr);
-            LEDBAR.SetValue(Tim);
-//            if(enable_step == 1){
-//                reg_one.expected = expected;
-//                reg_one.input = real_temp;
-//                real_temp = reg_one.Reg_step();
-//                enable_step = 0;
-//            }
-            if(exp_temp < 83){
-                kw = Brak;
-            }else if(exp_temp < 166){
-                kw = Zimny;
-            }else if(exp_temp < 250){
-                kw = Letni;
-            }else if(exp_temp < 333){
-                kw = Normalny;
-            }else if(exp_temp < 416){
-                kw = Przegrzany;
-            }else{
-                kw = Spalony;
-            }
-            Draw_info(real_temp, exp_temp, window);
-            ClearScreen();
-            Draw(ekr, kw);
-//            expected = 10;
-//            DrawPixels(Key);
-#ifdef TMSLAB_WIN
-            if(PartialRefresh()) return 0;
-#ifdef WIN_PLOT
-	// Zapis danych do pliku
-	fprintf(outputCSV,CSV_DANE);
-	printf("time %i \n",Tim);
-	fflush(outputCSV);
-	fflush(stdout);
-#endif
-#endif
-
+        unsigned char Key = KEYBOARD.GetKey();
+        Change_data(Key, &exp_temp, &window, &ekr);
+        LEDBAR.SetValue(Tim);
+        // if(enable_step == 1){
+        //     reg_one.expected = expected;
+        //     reg_one.input = real_temp;
+        //     real_temp = reg_one.Reg_step();
+        //     enable_step = 0;
+        // }
+        if(exp_temp < 83){
+            kw = Brak;
+        }else if(exp_temp < 166){
+            kw = Zimny;
+        }else if(exp_temp < 250){
+            kw = Letni;
+        }else if(exp_temp < 333){
+            kw = Normalny;
+        }else if(exp_temp < 416){
+            kw = Przegrzany;
+        }else{
+            kw = Spalony;
         }
+        Draw_info(real_temp, exp_temp, window);
+        ClearScreen();
+        Draw(ekr, kw);
+        // expected = 10;
+        // DrawPixels(Key);
+        #ifdef TMSLAB_WIN
+            if(PartialRefresh()) return 0;
+            #ifdef WIN_PLOT
+                // Zapis danych do pliku
+                fprintf(outputCSV,CSV_DANE);
+                printf("time %i \n",Tim);
+                fflush(outputCSV);
+                fflush(stdout);
+            #endif
+        #endif
     }
+}
 
 #ifdef TMSLAB_C2000
 
@@ -145,12 +143,13 @@ unsigned char Bufor[] = "Temp:  ";
     void Timer2Isr()
     {
 
-#ifdef BUFFERSYNC
-        if (EnableRefresh)
+    #ifdef BUFFERSYNC
+        if (EnableRefresh){
+            LCD.PartialRefresh();
+        }            
+    #else
         LCD.PartialRefresh();
-#else
-        LCD.PartialRefresh();
-#endif
+    #endif
 
         KEYBOARD.PartialRefresh();
 
@@ -207,13 +206,13 @@ unsigned char Bufor[] = "Temp:  ";
     }
     extern "C"
     {
-    int _system_pre_init()
-    {
-        EALLOW;
-        WdRegs.WDWCR.all = 0x68;
-        EDIS;
-        return (1);
-    }
+        int _system_pre_init()
+        {
+            EALLOW;
+            WdRegs.WDWCR.all = 0x68;
+            EDIS;
+            return (1);
+        }
     }
 #endif
 
