@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "reg2.h"
 
 class PID{
     private:
@@ -51,3 +52,65 @@ class Inercja{
         return output;
     }
 };
+
+//kod z wykładu
+/*
+class UAR
+{
+    float m_out;
+    float m_in;
+    public:
+    void setInput(float input){
+        m_in=input;
+    }
+
+    void Calculate(){
+        m_out=m_in;
+    }
+
+    float getOutput() {
+        return m_out;
+    }
+};
+
+class PID:public UAR {
+    float m_Tp, m_Kp, m_Ki, m_Kd;
+    float m_sum, m_Smin, m_Smax;
+    float m_prevIn;
+    public:
+    PID(float Kp, float Ti, float Td,float Tp,float Smin,float Smax); 
+    
+    PID::PID(float Kp, float Ti, float Td,float Tp,float Smin,float Smax){
+        m_Tp = Tp; m_Kp = Kp;
+        m_Ki = Kp * Tp / Ti;
+        m_Kd = Kp * Td / Tp;
+        m_in = 0;
+        m_prevIn = 0; m_out = 0;
+        m_sum = 0;
+        m_Smin=Smin; m_Smax=Smax;
+    }
+    PID::Calculate() {
+        float deltaIn = m_in - m_prevIn;
+        m_sum += m_in * m_Ki;
+        if(m_sum>m_Smax) m_sum=m_Smax;
+        if(m_sum<m_Smin) m_sum=m_Smin;
+        m_out = m_sum + m_in * m_Kp + deltaIn * m_Kd; 
+    }
+};
+
+class InercModel : public UAR {
+    float m_pole;
+    public:
+    InercModel(float pole);
+    InercModel::InercModel(float pole) {
+        m_pole = pole;
+        m_in = 0;
+        m_out = 0; 
+    }
+    InercModel::Calculate( ) {
+        m_out = m_out * m_pole + (1 - m_pole) * m_in; 
+    }
+};
+
+*/
+
