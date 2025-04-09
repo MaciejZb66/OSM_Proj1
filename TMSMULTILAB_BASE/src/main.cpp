@@ -36,7 +36,9 @@ long Timer2IsrPeriod=1; // okres pracy symulowanego licznika Timer2 podany w prz
   #endif
 
 int Tim = 0;                // Licznik uzytkownika
-//int enable_step = 0;
+int enable_step = 0;
+int last_temps[220] = {}; //do wykresu
+int last_temps_insert = 0;
 unsigned int preScale = 0;  // Preskaler licznika uzytkownika
 volatile char EnableRefresh = 0;    //Zezwolenie na odswiezenie zawartosci pamieci graficznej
 
@@ -81,16 +83,16 @@ int main()
     InitData();
 
     EnableInterrupts();
-    int exp_temp = 230;
+    int exp_temp = 50;
     int real_temp = 0;
     bool window = false;
     Ekran ekr = Obrazek;
     Kwiatek kw = Brak;
-    // float tp = 0.1;
-    // PID reg_one(10, 3, 0.9, tp);
-    // Inercja in1(1, tp, 5);
-    // Inercja in2(2, tp, 3);
-    // float expected = 0;
+    float tp = 0.1;
+    PID reg_one(0.1, 0.1, 0.1, tp);
+    Inercja in1(1, tp, 5);
+    Inercja in2(2, tp, 3);
+    float expected = 0;
     while (1)
     {
         EnableRefresh = 1;
@@ -100,12 +102,24 @@ int main()
         unsigned char Key = KEYBOARD.GetKey();
         Change_data(Key, &exp_temp, &window, &ekr);
         LEDBAR.SetValue(Tim);
-        // if(enable_step == 1){
-        //     reg_one.expected = expected;
-        //     reg_one.input = real_temp;
-        //     real_temp = reg_one.Reg_step();
-        //     enable_step = 0;
-        // }
+        if(enable_step == 1){
+//            in1.input = exp_temp;
+//            real_temp = in1.inercja_step();
+            reg_one.expected = expected;
+            reg_one.input = real_temp;
+            real_temp = reg_one.Reg_step();
+            enable_step = 0;
+            if(last_temps_insert <219){
+                last_temps[last_temps_insert] = exp_temp;
+                last_temps_insert++;
+            }else{
+                for(int i = 0 ;i < 219;i++){
+                    last_temps[i] = last_temps[i+1];
+                }
+                last_temps[219] = exp_temp;
+            }
+        }
+
         if(exp_temp < 83){
             kw = Brak;
         }else if(exp_temp < 166){
@@ -122,8 +136,7 @@ int main()
         Draw_info(real_temp, exp_temp, window);
         ClearScreen();
         Draw(ekr, kw);
-        // expected = 10;
-        // DrawPixels(Key);
+        expected = exp_temp;
         #ifdef TMSLAB_WIN
             if(PartialRefresh()) return 0;
             #ifdef WIN_PLOT
@@ -153,11 +166,11 @@ int main()
 
         KEYBOARD.PartialRefresh();
 
-        if (++preScale == 50000)
+        if (++preScale == 500)
         {
             preScale = 0;
             Tim++;
-//            enable_step = 1;
+            enable_step = 1;
         }
     }
 
