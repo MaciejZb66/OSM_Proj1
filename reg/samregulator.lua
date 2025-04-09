@@ -5,6 +5,7 @@ function Regulator(uchyb, last_uchyb, last_i)
     local i = (Kp * 1/Ti * Tp * uchyb) + last_i
     local d = Kp * (uchyb - last_uchyb)/Tp * Td
     local reg = p + i + d
+    print(p, string.format("%.2f", i), d)
     if reg > Limit_h  then
       i = i - (reg - Limit_h)
       reg = p + i + d
@@ -20,8 +21,8 @@ function Regulator(uchyb, last_uchyb, last_i)
 -- parametry symulacji
 local expected = 1
 local real = 0
-local tmax = 20
-Tp = 0.5
+local tmax = 5
+Tp = 0.1
 
 -- parametry regulatora
 Kp = 10

@@ -6,7 +6,8 @@
 class PID{
     private:
     float Kp, Ti, Td, Ts, output;
-    float last_i, last_input;
+    float limit_h, limit_l;
+    float last_i, last_input, last_expected;
     public:
     float input, expected;
 
@@ -17,19 +18,35 @@ class PID{
         Ts = t;
         last_i = 0;
         last_input = 0;
+        last_expected = 0;
+        limit_h = 15;
+        limit_l = 0;
     }
 
-    float Reg_step(){
-        //printf("(input: %f, expected: %f)",input, expected);
-        float P = Kp * (expected - input);
-        float I = (Kp /Ti * Ts * (expected - input)) + last_i;        
-        float D = Kp * ((expected - input) - (expected - last_input))/Ts * Td;
-        printf("P: %.2f \t", P);
+    float Reg_step() {
+        // Obliczenie członów regulatora PID
+        float P = Kp * (expected - input);  // Proporcjonalny
+        float I = (Kp / Ti) * Ts * (expected - input) + last_i;  // Całkujący
+        float D = Kp * ((expected - input) - (last_expected - last_input)) / (Ts * Td);  // Róniczkujący
+        printf("P: %2.2f,\tI: %2.2f,\tD: %2.2f\t\t",P, I, D);
+        // Zaktualizowanie zmiennych stanu
         last_i = I;
         last_input = input;
+        last_expected = expected;
+
+        // Obliczenie całkowitego wyjścia
         output = P + I + D;
+        if (output > limit_h){
+            I = I - (output - limit_h);
+            output = P + I + D;
+        }
+        if (output < limit_l){
+            I = I - (output - limit_l);
+            output = P + I + D;
+        }
         return output;
     }
+
 };
 
 class Inercja{
