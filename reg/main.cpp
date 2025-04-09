@@ -3,7 +3,7 @@
 //#define struct
 
 int main(){
-    float tp = 0.5;
+    double tp = 0.1;
     #ifndef struct
         PID reg_one(10, 3, 0.9, tp);
         Inercja in1(1, tp, 5);
@@ -17,17 +17,18 @@ int main(){
         Inercja_s_init(&in3, 1, tp, 5);
         Inercja_s_init(&in4, 2, tp, 3);
     #endif
-    float expected = 0;
-    float output = 0;
+    double expected = 0;
+    double output = 0;
     #ifndef struct
-        for(int i = 0; i< 50; i++){
+        for(double i = 0; i< 20; i+=tp){
             reg_one.expected = expected;
             reg_one.input = output;
             //output = reg_one.Reg_step();
             in1.input = reg_one.Reg_step();
             in2.input = in1.inercja_step();
             output = in2.inercja_step();
-            std::cout << i/10 << "." << i%10 << "\t" << in1.input << "\t" << output << "\n";
+            //std::cout << i << "\t" << in1.input << "\t" << output << "\n";
+            printf("Time: %.2f\tR: %.2f \t O: %.4f\n",i,in1.input,output);
             expected = 10;
         }
     #endif

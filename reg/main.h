@@ -5,13 +5,13 @@
 
 class PID{
     private:
-    float Kp, Ti, Td, Ts, output;
-    float limit_h, limit_l;
-    float last_i, last_input, last_expected;
+    double Kp, Ti, Td, Ts, output;
+    double limit_h, limit_l;
+    double last_i, last_input, last_expected;
     public:
-    float input, expected;
+    double input, expected;
 
-    PID(float kp, float ti, float td, float t){
+    PID(double kp, double ti, double td, double t){
         Kp = kp;
         Ti = ti;
         Td = td;
@@ -23,12 +23,12 @@ class PID{
         limit_l = 0;
     }
 
-    float Reg_step() {
+    double Reg_step() {
         // Obliczenie członów regulatora PID
-        float P = Kp * (expected - input);  // Proporcjonalny
-        float I = (Kp / Ti) * Ts * (expected - input) + last_i;  // Całkujący
-        float D = Kp * ((expected - input) - (last_expected - last_input)) / (Ts * Td);  // Róniczkujący
-        printf("P: %2.2f,\tI: %2.2f,\tD: %2.2f\t\t",P, I, D);
+        double P = Kp * (expected - input);  // Proporcjonalny
+        double I = (Kp / Ti) * Ts * (expected - input) + last_i;  // Całkujący
+        double D = Kp * ((expected - input) - (last_expected - last_input)) / (Ts * Td);  // Róniczkujący
+        printf("P: %2.2f,\tI: %2.2f,\tD: %2.2f  \t",P, I, D);
         // Zaktualizowanie zmiennych stanu
         last_i = I;
         last_input = input;
@@ -44,6 +44,7 @@ class PID{
             I = I - (output - limit_l);
             output = P + I + D;
         }
+        if (output < 0.0001 && output > -0.0001) output = 0;
         return output;
     }
 
@@ -51,17 +52,17 @@ class PID{
 
 class Inercja{
     private:
-    float last_input, kp, tin ,ts, output;
+    double last_input, kp, tin ,ts, output;
     public:
-    float input;
-    Inercja(float k, float t, float ti){
+    double input;
+    Inercja(double k, double t, double ti){
         last_input = 0;
         kp = k;
         ts = t;
         tin = ti;
     }
 
-    float inercja_step(){
+    double inercja_step(){
         //local out =  (Tp / (5 + Tp)) * enter + (5 / (5 + Tp)) * last           -- 1/(5s+1)
         //local out = ((Tp / (3 + Tp)) * enter + (3 / (3 + Tp)) * last/2)*2     -- 2/(3s+1)
         output = ((ts / (tin + ts)) * input + (tin / (tin + ts)) * last_input/kp)*kp;
@@ -74,10 +75,10 @@ class Inercja{
 /*
 class UAR
 {
-    float m_out;
-    float m_in;
+    double m_out;
+    double m_in;
     public:
-    void setInput(float input){
+    void setInput(double input){
         m_in=input;
     }
 
@@ -85,19 +86,19 @@ class UAR
         m_out=m_in;
     }
 
-    float getOutput() {
+    double getOutput() {
         return m_out;
     }
 };
 
 class PID:public UAR {
-    float m_Tp, m_Kp, m_Ki, m_Kd;
-    float m_sum, m_Smin, m_Smax;
-    float m_prevIn;
+    double m_Tp, m_Kp, m_Ki, m_Kd;
+    double m_sum, m_Smin, m_Smax;
+    double m_prevIn;
     public:
-    PID(float Kp, float Ti, float Td,float Tp,float Smin,float Smax); 
+    PID(double Kp, double Ti, double Td,double Tp,double Smin,double Smax); 
     
-    PID::PID(float Kp, float Ti, float Td,float Tp,float Smin,float Smax){
+    PID::PID(double Kp, double Ti, double Td,double Tp,double Smin,double Smax){
         m_Tp = Tp; m_Kp = Kp;
         m_Ki = Kp * Tp / Ti;
         m_Kd = Kp * Td / Tp;
@@ -107,7 +108,7 @@ class PID:public UAR {
         m_Smin=Smin; m_Smax=Smax;
     }
     PID::Calculate() {
-        float deltaIn = m_in - m_prevIn;
+        double deltaIn = m_in - m_prevIn;
         m_sum += m_in * m_Ki;
         if(m_sum>m_Smax) m_sum=m_Smax;
         if(m_sum<m_Smin) m_sum=m_Smin;
@@ -116,10 +117,10 @@ class PID:public UAR {
 };
 
 class InercModel : public UAR {
-    float m_pole;
+    double m_pole;
     public:
-    InercModel(float pole);
-    InercModel::InercModel(float pole) {
+    InercModel(double pole);
+    InercModel::InercModel(double pole) {
         m_pole = pole;
         m_in = 0;
         m_out = 0; 
