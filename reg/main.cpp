@@ -24,6 +24,9 @@ int main(){
             reg_one.expected = expected;
             reg_one.input = output;
             //output = reg_one.Reg_step();
+            // in1.input = expected;
+            // output = in1.inercja_step();
+
             in1.input = reg_one.Reg_step();
             in2.input = in1.inercja_step();
             output = in2.inercja_step();
