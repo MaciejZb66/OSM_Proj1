@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
+#include <iomanip> // Add this for std::setprecision and std::fixed
 #include "reg2.h"
 
 class PID{
@@ -28,7 +30,7 @@ class PID{
         double P = Kp * (expected - input);  // Proporcjonalny
         double I = (Kp / Ti) * Ts * (expected - input) + last_i;  // Całkujący
         double D = Kp * ((expected - input) - (last_expected - last_input)) / (Ts * Td);  // Róniczkujący
-        printf("P: %2.2f,\tI: %2.2f,\tD: %2.2f  \t",P, I, D);
+        //printf("P: %2.2f,\tI: %2.2f,\tD: %2.2f  \t",P, I, D);
         // Zaktualizowanie zmiennych stanu
         last_i = I;
         last_input = input;
