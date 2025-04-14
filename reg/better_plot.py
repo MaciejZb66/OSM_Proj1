@@ -26,28 +26,30 @@ y1 = df['Wsp. y1']
 y2 = df['Wsp. y2']
 
 # Rysowanie wykresu
-plt.figure(figsize=(6, 6))
+plt.figure(figsize=(12, 6))
 plt.xticks(fontsize=14)
 plt.yticks(fontsize=14)
 plt.title("Przebieg", fontsize=14)
-plt.xlabel('Próbki[n]', fontsize=14)
-plt.ylabel("Pozycja*4 [px]", fontsize=14)
-plt.plot(x, y1, color='#ff0000', label='Krzywa 1', linewidth=2)
-plt.plot(x, y2, color='#0000aa', label='Krzywa 2', linestyle='', marker=".", markersize=2)
+plt.xlabel('Czas [s]', fontsize=14)
+plt.ylabel("Temperatura [C]", fontsize=14)
+plt.plot(x, y1, color='#ff0000', label='Regulator', linewidth=2)
+plt.plot(x, y2, color='#0000aa', label='Wyjście', linewidth=2)#linestyle='', marker=".", markersize=2)
 plt.grid(color='#888888', linestyle='-')
 plt.legend(loc='upper right')
 plt.savefig(plik_obrazu)
 
 # Tworzenie prostego pliku HTML z obrazkiem
-with open(plik_widoku, 'w') as f:
-    f.write(f'''
-    <html>
-        <head><title>Wykres</title></head>
-        <body>
-            <h1>Wykres z pliku danych</h1>
-            <img src="{plik_obrazu}" alt="Wykres" style="max-width:100%;">
-        </body>
-    </html>
-    ''')
+if not os.path.isfile(plik_widoku):
+    with open(plik_widoku, 'w') as f:
+        f.write(f'''
+        <html>
+            <head><title>Wykres</title></head>
+            <body>
+                <h1>Wykres z pliku danych</h1>
+                <img src="{plik_obrazu}" alt="Wykres" style="max-width:100%;">
+            </body>
+        </html>
+        ''')
+
 
 print(f'Gotowe! Otwórz plik {plik_widoku} w przeglądarce.')
