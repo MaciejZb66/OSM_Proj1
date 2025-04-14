@@ -16,7 +16,7 @@ if not os.path.isfile(plik_danych):
 df = pd.read_csv(plik_danych)
 df.columns = df.columns.str.strip()
 
-required_cols = {'Wsp. x', 'Wsp. y1', 'Wsp. y2'}
+required_cols = {'Wsp. x', 'Wsp. y1', 'Wsp. y2', 'Zak'}
 if not required_cols.issubset(df.columns):
     print("Brak wymaganych kolumn. Zawarte kolumny:", df.columns.tolist())
     exit()
@@ -24,7 +24,7 @@ if not required_cols.issubset(df.columns):
 x = df['Wsp. x']
 y1 = df['Wsp. y1']
 y2 = df['Wsp. y2']
-
+z = df['Zak']
 # Rysowanie wykresu
 plt.figure(figsize=(12, 6))
 plt.xticks(fontsize=14)
@@ -32,8 +32,16 @@ plt.yticks(fontsize=14)
 plt.title("Przebieg", fontsize=14)
 plt.xlabel('Czas [s]', fontsize=14)
 plt.ylabel("Temperatura [C]", fontsize=14)
-plt.plot(x, y1, color='#ff0000', label='Regulator', linewidth=2)
-plt.plot(x, y2, color='#0000aa', label='Wyjście', linewidth=2)#linestyle='', marker=".", markersize=2)
+for color, label, value in [('#ff0000', 'Regulator', 1), ('#00ff00', 'Regulator', 0)]:
+    mask = z == value
+    if mask.any():  # avoid empty plot
+        plt.plot(x[mask], y1[mask], color=color, label=label, linewidth=2)
+
+for color, label, value in [('#aa00aa', 'Wyjście', 1), ('#0000aa', 'Wyjście', 0)]:
+    mask = z == value
+    if mask.any():  # avoid empty plot
+        plt.plot(x[mask], y2[mask], color=color, label=label, linewidth=2)#linestyle='', marker=".", markersize=2)
+
 plt.grid(color='#888888', linestyle='-')
 plt.legend(loc='upper right')
 plt.savefig(plik_obrazu)

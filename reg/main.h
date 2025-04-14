@@ -7,11 +7,11 @@
 
 class PID{
     private:
-    double Kp, Ti, Td, Ts, output;
+    double Kp, Ti, Td, Ts;
     double limit_h, limit_l;
     double last_i, last_input, last_expected;
     public:
-    double input, expected;
+    double input, expected, output;
 
     PID(double kp, double ti, double td, double t, double start){
         Kp = kp;
@@ -63,9 +63,9 @@ class PID{
 
 class Inercja{
     private:
-    double last_output, kp, tin ,ts, output;
+    double last_output, kp, tin ,ts;
     public:
-    double input;
+    double input, output;
     Inercja(double k, double t, double ti, double start){
         last_output = start;
         kp = k;
