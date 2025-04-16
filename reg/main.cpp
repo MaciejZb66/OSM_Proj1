@@ -39,6 +39,7 @@ int main(){
 
     }while(!file.good());    
     file.close();
-    std::cout << "ok\n";
+    Draw_last(output);
+    std::cout << "Calculated over requested time\n";
     return 0;
 }

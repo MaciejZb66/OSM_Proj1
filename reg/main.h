@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iomanip> // Add this for std::setprecision and std::fixed
 #include "reg2.h"
+#include "bitmaps.h"
 
 class PID{
     private:
