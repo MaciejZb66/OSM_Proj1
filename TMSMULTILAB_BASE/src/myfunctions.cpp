@@ -5,6 +5,10 @@ extern unsigned char *textEkran;
 extern const int Test2[];
 extern const int Test3[];
 extern int last_temps[];
+extern PID reg_one;
+extern Inercja in1;
+extern Inercja in2;
+extern PID in3;
 
 
 void Draw_flower(Kwiatek wyb) //texas int (16 bit) board
@@ -14,9 +18,9 @@ void Draw_flower(Kwiatek wyb) //texas int (16 bit) board
             for(int b = 15; b >= 0; b--){
                 switch (wyb){
                     case Spalony:
-//                        if((spalony[(y - 9) * 15 + x])&0x0001 << b){
-//                            SetPixel(ekran, 16 * x + 15 - b, y);
-//                        }
+                        if((spalony[(y - 9) * 15 + x])&0x0001 << b){
+                            SetPixel(ekran, 16 * x + 15 - b, y);
+                        }
                         break;
                     case Przegrzany:
                         if((przegrzany[(y - 9) * 15 + x])&0x0001 << b){
@@ -126,5 +130,15 @@ void ClearScreen()
 }
 
 void Reg(int* real_temp, int* exp_temp, bool* window){
+    reg_one.expected = (double)(*exp_temp);
+    reg_one.input = (double)(*real_temp);
+    in1.input = reg_one.Reg_step();
+    if(*window){
+        in2.input = in1.inercja_step() - in3.Reg_step();
+    }else{
+        in2.input = in1.inercja_step();
+    }
+    *real_temp = (int)in2.inercja_step();
+    in3.input = (double)*real_temp - 180;
 
 }

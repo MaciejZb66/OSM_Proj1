@@ -19,3 +19,4 @@ void Change_data(char key,int* exp_temp, bool* window, Ekran* ekr);
 void Draw(Ekran ekr, Kwiatek wyb);
 void Draw_wykres();
 void ClearScreen();
+void Reg(int* real_temp, int* exp_temp, bool* window);

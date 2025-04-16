@@ -1,88 +1,81 @@
 #pragma once
 
 
-//class PID {
-//private:
-//    float Kp, Ti, Td, Ts, output;
-//    float last_i, last_input;
-//public:
-//    float input, expected;
-//
-//    // Konstruktor bez typu zwracanego
-//    PID(float kp, float ti, float td, float t) {
-//        Kp = kp;
-//        Ti = ti;
-//        Td = td;
-//        Ts = t;
-//        last_i = 0;
-//        last_input = 0;
-//    }
-//
-//    float Reg_step() {
-//        float P = Kp * (expected - input);
-//        float I = last_i + (Kp / Ti) * Ts * (expected - input);
-//        float D = Kp * Td * ((input - last_input) / Ts);  // Poprawiony cz³on D
-//        last_i = I;
-//        last_input = input;
-//        output = P + I + D;
-//        return output;
-//    }
-//};
-
-
 class PID{
     private:
-    float Kp, Ti, Td, Ts, output;
-    float last_i, last_input;
+    double Kp, Ti, Td, Ts;
+    double limit_h, limit_l;
+    double last_i, last_input, last_expected;
     public:
-    float input, expected;
+    double input, expected, output;
 
-    PID(float kp, float ti, float td, float t){
+    PID(double kp, double ti, double td, double t, double start){
         Kp = kp;
         Ti = ti;
         Td = td;
         Ts = t;
         last_i = 0;
-        last_input = 0;
+        last_input = start;
+        last_expected = start;
+        limit_h = 500;
+        limit_l = 0;
     }
 
-    float Reg_step() {
+    double Reg_step() {
         // Obliczenie cz³onów regulatora PID
-        float P = Kp * (expected - input);  // Proporcjonalny
-        float I = (Kp / Ti) * Ts * (expected - input) + last_i;  // Ca³kuj¹cy
-        float D = Kp * ((expected - input) - (expected - last_input)) / (Ts * Td);  // Ró¿niczkuj¹cy
-
+        double P = Kp * (expected - input);  // Proporcjonalny
+        double I, D;
+        if (Ti != 0){
+            I = (Kp / Ti) * Ts * (expected - input) + last_i;  // Ca³kuj¹cy
+        }else{
+            I = 0;
+        }
+        if (Td != 0){
+            D = Kp * ((expected - input) - (last_expected - last_input)) / (Ts * Td);  // Róniczkuj¹cy
+        }else{
+            D = 0;
+        }
+        //printf("P: %2.2f,\tI: %2.2f,\tD: %2.2f  \t",P, I, D);
         // Zaktualizowanie zmiennych stanu
         last_i = I;
         last_input = input;
+        last_expected = expected;
 
         // Obliczenie ca³kowitego wyjœcia
         output = P + I + D;
-
+        if (output > limit_h){
+            if (Ti != 0) I = I - (output - limit_h);
+            output = P + I + D;
+        }
+        if (output < limit_l){
+            if (Ti != 0) I = I - (output - limit_l);
+            output = P + I + D;
+        }
+        if (output < 0.0001 && output > -0.0001) output = 0;
         return output;
     }
 
 };
 
-
 class Inercja{
     private:
-    float last_input, kp, tin ,ts, output;
+    double last_output, kp, tin ,ts;
     public:
-    float input;
-    Inercja(float k, float t, float ti){
-        last_input = 0;
+    double input, output;
+    Inercja(double k, double t, double ti, double start){
+        last_output = start;
         kp = k;
         ts = t;
         tin = ti;
     }
 
-    float inercja_step(){
-        //local out =  (Tp / (5 + Tp)) * enter + (5 / (5 + Tp)) * last           -- 1/(5s+1)
+    double inercja_step(){
+        //local out =  (Tp / (5 + Tp)) * enter + (5 / (5 + Tp)) * last          -- 1/(5s+1)
         //local out = ((Tp / (3 + Tp)) * enter + (3 / (3 + Tp)) * last/2)*2     -- 2/(3s+1)
-        output = kp * ((ts / (tin + ts)) * input + (tin / (tin + ts)) * last_input);
-        last_input = input;
+        output = ((ts / (tin + ts)) * input + (tin / (tin + ts)) * last_output/kp)*kp;
+        last_output = output;
         return output;
     }
 };
+
 

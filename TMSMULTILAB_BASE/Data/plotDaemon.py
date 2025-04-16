@@ -23,7 +23,7 @@ def view_monitor():
         
         a_window=pyautogui.getWindowsWithTitle('TMSLAB SiM')
         if len(a_window)>0: 
-            a_window[0].moveTo(-100,-40)
+           a_window[0].moveTo(-100,-40)
             
         if not os.path.isfile(plik_danych):
             print('Brak pliku danych')
@@ -50,7 +50,7 @@ def view_monitor():
             plt.grid(color='#888888', linestyle='-')
             plt.legend(loc='upper right')
             plt.savefig(plik_obrazu)
-            os.utime(plik_widoku, (aktualny_czas_modyfikacji, aktualny_czas_modyfikacji))
+            #os.utime(plik_widoku, (aktualny_czas_modyfikacji, aktualny_czas_modyfikacji))
         
            
 Thr = threading.Thread(target=view_monitor, name='view')

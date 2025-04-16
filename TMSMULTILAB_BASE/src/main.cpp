@@ -61,6 +61,14 @@ int y[MaxObj];
 
 unsigned char Bufor[] = "Temp:  ";
 
+double start = 180;
+double tp = 0.1;
+PID reg_one(10, 3, 0.9, tp, start);
+Inercja in1(1, tp, 7, start);
+Inercja in2(1, tp, 5, start);
+PID in3(0.8, 0, 0, tp, start);
+
+
 int main()
 {
     SetUpPeripherials();
@@ -83,16 +91,16 @@ int main()
     InitData();
 
     EnableInterrupts();
-    int exp_temp = 50;
-    int real_temp = 0;
+
+    int exp_temp = start;
+    int real_temp = start;
     bool window = false;
     Ekran ekr = Obrazek;
     Kwiatek kw = Brak;
-    float tp = 0.1;
-    PID reg_one(0.1, 0.1, 0.1, tp);
-    Inercja in1(1, tp, 5);
-    Inercja in2(2, tp, 3);
-    float expected = 0;
+
+
+
+
     while (1)
     {
         EnableRefresh = 1;
@@ -103,32 +111,28 @@ int main()
         Change_data(Key, &exp_temp, &window, &ekr);
         LEDBAR.SetValue(Tim);
         if(enable_step == 1){
-//            in1.input = exp_temp;
-//            real_temp = in1.inercja_step();
-            reg_one.expected = expected;
-            reg_one.input = real_temp;
-            real_temp = reg_one.Reg_step();
+            Reg(&real_temp, &exp_temp, &window);
             enable_step = 0;
             if(last_temps_insert <219){
-                last_temps[last_temps_insert] = exp_temp;
+                last_temps[last_temps_insert] = real_temp;
                 last_temps_insert++;
             }else{
                 for(int i = 0 ;i < 219;i++){
                     last_temps[i] = last_temps[i+1];
                 }
-                last_temps[219] = exp_temp;
+                last_temps[219] = real_temp;
             }
         }
 
-        if(exp_temp < 83){
+        if(real_temp < 83){
             kw = Brak;
-        }else if(exp_temp < 166){
+        }else if(real_temp < 166){
             kw = Zimny;
-        }else if(exp_temp < 250){
+        }else if(real_temp < 250){
             kw = Letni;
-        }else if(exp_temp < 333){
+        }else if(real_temp < 333){
             kw = Normalny;
-        }else if(exp_temp < 416){
+        }else if(real_temp < 416){
             kw = Przegrzany;
         }else{
             kw = Spalony;
@@ -136,7 +140,6 @@ int main()
         Draw_info(real_temp, exp_temp, window);
         ClearScreen();
         Draw(ekr, kw);
-        expected = exp_temp;
         #ifdef TMSLAB_WIN
             if(PartialRefresh()) return 0;
             #ifdef WIN_PLOT
@@ -166,7 +169,7 @@ int main()
 
         KEYBOARD.PartialRefresh();
 
-        if (++preScale == 500)
+        if (++preScale == 15000)
         {
             preScale = 0;
             Tim++;
