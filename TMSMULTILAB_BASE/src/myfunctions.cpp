@@ -1,15 +1,21 @@
 #include "myfunctions.h"
 
-extern unsigned long *ekran;
-extern unsigned char *textEkran;
+//extern unsigned long *ekran;
+//extern unsigned char *textEkran;
 extern const int Test2[];
 extern const int Test3[];
-extern int last_temps[];
-extern PID reg_one;
-extern Inercja in1;
-extern Inercja in2;
-extern PID in3;
+//extern int last_temps[];
 
+
+int exp_temp = start;
+int real_temp = start;
+
+PID reg_one(10, 3, 0.9, tp, start);
+Inercja in1(1, tp, 7, start);
+Inercja in2(1, tp, 5, start);
+PID in3(0.8, 0, 0, tp, start);
+char buf[7] = "real";
+Wykres real(&buf[0], &real_temp);
 
 void Draw_flower(Kwiatek wyb) //texas int (16 bit) board
 {
@@ -89,10 +95,10 @@ void Change_data(char key,int* exp_temp, bool* window, Ekran* ekr){
         *window = !(*window);
         break;
     case 4:
-        if(*ekr == Obrazek){
-            *ekr = Wykres;
+        if(*ekr == Obrazek_e){
+            *ekr = Wykres_e;
         }else{
-            *ekr = Obrazek;
+            *ekr = Obrazek_e;
         }
         break;
     }
@@ -101,10 +107,10 @@ void Change_data(char key,int* exp_temp, bool* window, Ekran* ekr){
 void Draw(Ekran ekr, Kwiatek wyb){
 
     switch(ekr){
-    case Wykres:
-        Draw_wykres();
+    case Wykres_e:
+        real.Show();
         break;
-    case Obrazek:
+    case Obrazek_e:
         Draw_flower(wyb);
         break;
     }
@@ -113,15 +119,7 @@ void Draw(Ekran ekr, Kwiatek wyb){
     }
 }
 
-void Draw_wykres(){
-    for(int i = 0; i< 220; i++){
-        SetPixel(ekran, i+10, ((500-last_temps[i])/5)+20);
-        SetPixel(ekran, i+10, 120);
-        if (i < 100){
-            SetPixel(ekran, 10, i+20);
-        }
-    }
-}
+
 
 void ClearScreen()
 {
@@ -140,5 +138,28 @@ void Reg(int* real_temp, int* exp_temp, bool* window){
     }
     *real_temp = (int)in2.inercja_step();
     in3.input = (double)*real_temp - 180;
+    real.Draw();
 
 }
+
+Kwiatek Choose_state(int temp){
+    Kwiatek kw;
+    if(temp < 83){
+       kw = Brak;
+    }else if(temp < 166){
+       kw = Zimny;
+    }else if(temp < 250){
+       kw = Letni;
+    }else if(temp < 333){
+       kw = Normalny;
+    }else if(temp < 416){
+       kw = Przegrzany;
+    }else{
+       kw = Spalony;
+    }
+    return kw;
+}
+
+
+
+

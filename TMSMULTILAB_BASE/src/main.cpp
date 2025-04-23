@@ -22,7 +22,7 @@
 
 unsigned long *ekran; // Adres obszaru graficznego LCD [8*128*2]
 #ifdef TMSLAB_C2000
-unsigned char *textEkran; // Adres obszaru tekstowego [40*16/2]
+    unsigned char *textEkran; // Adres obszaru tekstowego [40*16/2]
 #endif
 
 #ifdef TMSLAB_WIN
@@ -59,15 +59,8 @@ int x[MaxObj];
 int y[MaxObj];
 #endif
 
-unsigned char Bufor[] = "Temp:  ";
-
-double start = 180;
-double tp = 0.1;
-PID reg_one(10, 3, 0.9, tp, start);
-Inercja in1(1, tp, 7, start);
-Inercja in2(1, tp, 5, start);
-PID in3(0.8, 0, 0, tp, start);
-
+extern int exp_temp;
+extern int real_temp;
 
 int main()
 {
@@ -92,13 +85,10 @@ int main()
 
     EnableInterrupts();
 
-    int exp_temp = start;
-    int real_temp = start;
+
     bool window = false;
-    Ekran ekr = Obrazek;
+    Ekran ekr = Obrazek_e;
     Kwiatek kw = Brak;
-
-
 
 
     while (1)
@@ -112,31 +102,19 @@ int main()
         LEDBAR.SetValue(Tim);
         if(enable_step == 1){
             Reg(&real_temp, &exp_temp, &window);
-            enable_step = 0;
-            if(last_temps_insert <219){
-                last_temps[last_temps_insert] = real_temp;
-                last_temps_insert++;
-            }else{
-                for(int i = 0 ;i < 219;i++){
-                    last_temps[i] = last_temps[i+1];
-                }
-                last_temps[219] = real_temp;
-            }
-        }
 
-        if(real_temp < 83){
-            kw = Brak;
-        }else if(real_temp < 166){
-            kw = Zimny;
-        }else if(real_temp < 250){
-            kw = Letni;
-        }else if(real_temp < 333){
-            kw = Normalny;
-        }else if(real_temp < 416){
-            kw = Przegrzany;
-        }else{
-            kw = Spalony;
+//            enable_step = 0;
+//            if(last_temps_insert <219){
+//                last_temps[last_temps_insert] = real_temp;
+//                last_temps_insert++;
+//            }else{
+//                for(int i = 0 ;i < 219;i++){
+//                    last_temps[i] = last_temps[i+1];
+//                }
+//                last_temps[219] = real_temp;
+//            }
         }
+        kw = Choose_state(real_temp);
         Draw_info(real_temp, exp_temp, window);
         ClearScreen();
         Draw(ekr, kw);
