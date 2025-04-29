@@ -37,8 +37,6 @@ long Timer2IsrPeriod=1; // okres pracy symulowanego licznika Timer2 podany w prz
 
 int Tim = 0;                // Licznik uzytkownika
 int enable_step = 0;
-int last_temps[220] = {}; //do wykresu
-int last_temps_insert = 0;
 unsigned int preScale = 0;  // Preskaler licznika uzytkownika
 volatile char EnableRefresh = 0;    //Zezwolenie na odswiezenie zawartosci pamieci graficznej
 
@@ -61,6 +59,7 @@ int y[MaxObj];
 
 extern int exp_temp;
 extern int real_temp;
+extern int err_temp;
 
 int main()
 {
@@ -101,18 +100,9 @@ int main()
         Change_data(Key, &exp_temp, &window, &ekr);
         LEDBAR.SetValue(Tim);
         if(enable_step == 1){
-            Reg(&real_temp, &exp_temp, &window);
+            Reg(&real_temp, &exp_temp, &err_temp, &window);
+            enable_step = 0;
 
-//            enable_step = 0;
-//            if(last_temps_insert <219){
-//                last_temps[last_temps_insert] = real_temp;
-//                last_temps_insert++;
-//            }else{
-//                for(int i = 0 ;i < 219;i++){
-//                    last_temps[i] = last_temps[i+1];
-//                }
-//                last_temps[219] = real_temp;
-//            }
         }
         kw = Choose_state(real_temp);
         Draw_info(real_temp, exp_temp, window);
