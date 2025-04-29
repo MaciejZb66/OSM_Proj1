@@ -13,11 +13,11 @@ Inercja in1(1, tp, 7, start);
 Inercja in2(1, tp, 5, start);
 PID in3(0.8, 0, 0, tp, start);
 char buf_r[wykres_char] = "real";
-Wykres real(&buf_r[0], &real_temp);
+Wykres real(&buf_r[0], &real_temp, 0);
 char buf_u[wykres_char] = "err";
-Wykres uchyb(&buf_u[0], &err_temp);
+Wykres uchyb(&buf_u[0], &err_temp, 20);
 char buf_rg[wykres_char] = "reg";
-Wykres reg_plot(&buf_rg[0], &reg_out);
+Wykres reg_plot(&buf_rg[0], &reg_out, 0);
 
 void Draw_flower(Kwiatek wyb) //texas int (16 bit) board
 {

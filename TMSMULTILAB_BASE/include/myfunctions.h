@@ -36,9 +36,10 @@ private:
     char os_y_name[wykres_char];
     char os_x_name[4];
     int* source_data;
+    int offset;
 public:
     int last_temps[220];
-    Wykres(char* name, int* source){
+    Wykres(char* name, int* source, int off){
         for(int i = 0; i< wykres_char; i++){
             os_y_name[i] = name[i];
             if(sizeof(name) + 1<i){
@@ -51,6 +52,7 @@ public:
         os_x_name[3] = 0x65;
         last_temps_insert = 0;
         source_data = source;
+        off = offset;
     }
 
     void Draw(){
@@ -68,30 +70,47 @@ public:
     void Show(){
         //data
         for(int i = 0; i< 220; i++){
-            SetPixel(ekran, i+15, ((500-last_temps[i])/5)+20);
-            SetPixel(ekran, i+15, 120);
+            SetPixel(ekran, i+19, ((500-last_temps[i] + (10 * offset))/5)+20);
+            SetPixel(ekran, i+19, 120);
             if (i < 100){
-                SetPixel(ekran, 15, i+20);
+                SetPixel(ekran, 19, i+20);
             }
         }
         //value 50
-        for(int i=13; i<18;i++){
+        for(int i=17; i<22;i++){
             SetPixel(ekran,i,20);
         }
-        textEkran[40*2]=0x35;
-        textEkran[40*2+1]=0x30;
+        if(offset == 20){
+            textEkran[40*2+1]=0x33;
+        }else{
+            textEkran[40*2+2]=0x35;
+        }        
+        textEkran[40*2+2]=0x30;
         //value 20
-        for(int i=13; i<18;i++){
+        for(int i=17; i<22;i++){
             SetPixel(ekran,i,80);
         }
-        textEkran[40*10]=0x32;
-        textEkran[40*10+1]=0x30;
+        if(offset == 20){
+            textEkran[40*10]=0x2D;
+            textEkran[40*10+1]=0x31;
+            textEkran[40*10+2]=0x30;
+        }else{
+            textEkran[40*10+1]=0x32;
+            textEkran[40*10+2]=0x30;
+        }          
         //value 10
-        for(int i=13; i<18;i++){
+        for(int i=17; i<22;i++){
             SetPixel(ekran,i,100);
         }
-        textEkran[40*12]=0x31;
-        textEkran[40*12+1]=0x30;
+        if(offset == 20){
+            textEkran[40*12]=0x2D;
+            textEkran[40*12+1]=0x32;
+            textEkran[40*12+2]=0x30;
+        }else{
+            textEkran[40*12+1]=0x31;
+            textEkran[40*12+2]=0x30;
+        }  
+        
         //y name
         for(int i = 0; i < wykres_char; i++){
             textEkran[40*(i+4)]=os_y_name[i];
