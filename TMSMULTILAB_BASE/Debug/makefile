@@ -15,9 +15,9 @@ ORDERED_OBJS += \
 "./src/square.obj" \
 "../TMSMULTILAB.lib" \
 $(GEN_CMDS__FLAG) \
--l"C:/Users/Student/Desktop/245626,245585/TMSMULTILAB_BASE/TMSMULTILAB.lib" \
--l"C:/Users/Student/Desktop/245626,245585/TMSMULTILAB_BASE/CMDRAM/2837xD_RAM_lnk_cpu1.cmd" \
--l"C:/Users/Student/Desktop/245626,245585/TMSMULTILAB_BASE/CMDRAM/F2837xD_Headers_nonBIOS_cpu1.cmd" \
+-l"C:/Users/Student/Desktop/245626,245585/OSM_Proj1/TMSMULTILAB_BASE/TMSMULTILAB.lib" \
+-l"C:/Users/Student/Desktop/245626,245585/OSM_Proj1/TMSMULTILAB_BASE/CMDRAM/2837xD_RAM_lnk_cpu1.cmd" \
+-l"C:/Users/Student/Desktop/245626,245585/OSM_Proj1/TMSMULTILAB_BASE/CMDRAM/F2837xD_Headers_nonBIOS_cpu1.cmd" \
 
 -include ../makefile.init
 

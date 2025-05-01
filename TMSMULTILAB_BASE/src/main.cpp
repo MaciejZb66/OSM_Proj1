@@ -137,7 +137,7 @@ int main()
 
         KEYBOARD.PartialRefresh();
 
-        if (++preScale == 15000)
+        if (++preScale == 5000)//15000
         {
             preScale = 0;
             Tim++;

@@ -52,7 +52,7 @@ public:
         os_x_name[3] = 0x65;
         last_temps_insert = 0;
         source_data = source;
-        off = offset;
+        offset = off;
     }
 
     void Draw(){
@@ -70,7 +70,7 @@ public:
     void Show(){
         //data
         for(int i = 0; i< 220; i++){
-            SetPixel(ekran, i+19, ((500-last_temps[i] + (10 * offset))/5)+20);
+            SetPixel(ekran, i+19, ((500-last_temps[i] - (10 * offset))/5)+20);
             SetPixel(ekran, i+19, 120);
             if (i < 100){
                 SetPixel(ekran, 19, i+20);
@@ -83,7 +83,7 @@ public:
         if(offset == 20){
             textEkran[40*2+1]=0x33;
         }else{
-            textEkran[40*2+2]=0x35;
+            textEkran[40*2+1]=0x35;
         }        
         textEkran[40*2+2]=0x30;
         //value 20
@@ -91,8 +91,6 @@ public:
             SetPixel(ekran,i,80);
         }
         if(offset == 20){
-            textEkran[40*10]=0x2D;
-            textEkran[40*10+1]=0x31;
             textEkran[40*10+2]=0x30;
         }else{
             textEkran[40*10+1]=0x32;
@@ -104,7 +102,7 @@ public:
         }
         if(offset == 20){
             textEkran[40*12]=0x2D;
-            textEkran[40*12+1]=0x32;
+            textEkran[40*12+1]=0x31;
             textEkran[40*12+2]=0x30;
         }else{
             textEkran[40*12+1]=0x31;
